@@ -3,19 +3,27 @@
  <meta charset="utf-8"/>
  <title>Breakout Game</title>
  <style>
-    .buttonBig {font-family:"Lucida Console";width: 50%;font-size:30px;background-color:red;cursor:pointer;transition-duration: 0.4s;border-radius: 10px;border-color:black;}
+    .buttonHard {font-family:"Lucida Console";width: 50%;font-size:30px;cursor:pointer;transition-duration: 0.4s;border-radius: 10px;border-color:black;background-color:#e82a43;}
     * {padding: 0;margin:0;}
-    .buttonBig:hover{background-color:white;border-color:red;}
-    .buttonPause {width:5%;font-size:50px;background-color:red;cursor:pointer;border-radius:3px}
+    .buttonHard:hover{background-color:white;border-color:#e82a43;;}
+    .buttonMedium {font-family:"Lucida Console";width: 50%;font-size:30px;cursor:pointer;transition-duration: 0.4s;border-radius: 10px;border-color:black;background-color:#ebb821;;}
+    * {padding: 0;margin:0;}
+    .buttonMedium:hover{background-color:white;border-color:#ebb821;;}
+    .buttonEasy {font-family:"Lucida Console";width: 50%;font-size:30px;cursor:pointer;transition-duration: 0.4s;border-radius: 10px;border-color:black;background-color:#1cd60f;}
+    * {padding: 0;margin:0;}
+    .buttonEasy:hover{background-color:white;border-color:#1cd60f;}
+    .buttonPause {width:5%;font-size:50px;background-color:#e82a43;;cursor:pointer;border-radius:3px}
     canvas { background: black; display: block; margin: 0 auto; }
  </style>
 </head>
 <body style="background-color: grey;">
 <button class = "button buttonPause" id="pauseButton" onclick="paused = true;">||</button> 
 <br>
-<center><h2 style="font-family:Lucida Console" id="startText">Press START to begin</h2>
+<center><h2 style="font-family:Lucida Console" id="startText">Choose your difficulty to begin</h2>
 <br>
-<button class="button buttonBig" id="Btn" onclick="draw();">START</button></center>
+<button class="button buttonEasy" id="Btn1" title = "Large paddle and 3 lives" onclick="lives = 3; paddleWidth=100; draw();">Easy</button>
+<button class="button buttonMedium" id="Btn2" title = "Normal-sized paddle and 2 lives" onclick="lives = 2; paddleWidth=60; draw();">Medium</button>
+<button class="button buttonHard" id="Btn3" title = "Tiny paddle and only 1 life" onclick="lives = 1; paddleWidth=20; draw();">Hard</button></center>
 <br>
 <canvas id="myCanvas" width="480" height="320">
 </canvas>
@@ -26,7 +34,7 @@
  var ballRadius = 10;
  var speed = 10;
  var paddleHeight = 10;
- var paddleWidth = 75;
+ var paddleWidth = 60;
  var paddleX = (canvas.width-paddleWidth) / 2;
  var paddleY = (canvas.height-paddleHeight);
  var rightPressed = false;
@@ -57,13 +65,28 @@
  document.addEventListener("keydown", keyDownHandler, false);
  document.addEventListener("keyup", keyUpHandler, false);
  document.addEventListener("mousemove", mouseMoveHandler, false);
- Btn = document.getElementById("Btn")
+ Btn1 = document.getElementById("Btn1")
+ Btn2 = document.getElementById("Btn2")
+ Btn3 = document.getElementById("Btn3")
  const startText = document.getElementById("startText")
- Btn.addEventListener("click", () => {
-    Btn.style.visibility = "hidden";
+ Btn1.addEventListener("click", () => {
+    Btn1.style.visibility = "hidden";
+    Btn2.style.visibility = "hidden";
+    Btn3.style.visibility = "hidden";
     startText.style.visibility = "hidden";
  });
-
+ Btn2.addEventListener("click", () => {
+    Btn1.style.visibility = "hidden";
+    Btn2.style.visibility = "hidden";
+    Btn3.style.visibility = "hidden";
+    startText.style.visibility = "hidden";
+ });
+ Btn3.addEventListener("click", () => {
+    Btn1.style.visibility = "hidden";
+    Btn2.style.visibility = "hidden";
+    Btn3.style.visibility = "hidden";
+    startText.style.visibility = "hidden";
+ });
  
  
 
