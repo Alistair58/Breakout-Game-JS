@@ -17,7 +17,7 @@
 </canvas>
 
 <script>
- var canvas = document.getElementById("myCanvas"); //Testing
+ var canvas = document.getElementById("myCanvas");
  var ctx = canvas.getContext("2d");
  var ballRadius = 10;
  var speed = 10;
@@ -201,7 +201,7 @@
                 document.location.reload();
             }
             else { //If there are lives left the ball and paddle are reset
-                x = canvas.width/2;
+                x = Math.floor(Math.random()*canvas.width-ballRadius)
                 y = canvas.height-30;
                 dx = 2;
                 dy = -2;
