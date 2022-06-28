@@ -115,6 +115,20 @@
     }
  }
 
+ function brickExplosion(brick) {
+    var startTime =  new Date().getTime()
+    var currentTime =  new Date().getTime()
+    var elapsedTime = 0
+    while(elapsedTime<1000) {
+        currentTime =  new Date().getTime()
+        ctx.beginPath();
+        ctx.rect(brick.x, brick.y, brickWidth, brickHeight);        //Random (but broken) dot code - ctx.rect(Math.floor(Math.random()*brick.x+brickWidth)+brick.x, Math.floor(Math.random()*brick.y-brickHeight)+brick.y, 2, 2)
+        ctx.fillStyle = "orange";
+        ctx.fill();
+        ctx.closePath();
+        elapsedTime = currentTime - startTime;
+    }
+ }
  
 
  function collisionDetection() {
@@ -123,6 +137,7 @@
             var brick = bricks[c][r]; //Stores each brick as brick
             if(brick.status == 1){
                 if(x > brick.x && x < brick.x+brickWidth && y > brick.y && y < brick.y+brickHeight) { //If the ball is between the x and y values of the brick
+                    brickExplosion(brick);
                     brick.status = 0;  //brick is now destroyed
                     dy = -dy; //Changes direction
                     score++;
