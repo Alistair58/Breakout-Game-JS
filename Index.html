@@ -21,10 +21,15 @@
 <br>
 <center><h2 style="font-family:Lucida Console" id="startText">Choose your difficulty to begin</h2>
 <br>
-<button class="button buttonEasy" id="Btn1" title = "Large paddle and 3 lives" onclick="lives = 3; paddleWidth=100; draw();">Easy</button>
-<button class="button buttonMedium" id="Btn2" title = "Normal-sized paddle and 2 lives" onclick="lives = 2; paddleWidth=60; draw();">Medium</button>
-<button class="button buttonHard" id="Btn3" title = "Tiny paddle and only 1 life" onclick="lives = 1; paddleWidth=20; draw();">Hard</button></center>
+<button class="button buttonEasy" id="Btn1" title = "Large paddle and 3 lives" onclick="lives = 3; paddleWidth=100; difficultyChosen = true; bothDone();">Easy</button>
+<button class="button buttonMedium" id="Btn2" title = "Normal-sized paddle and 2 lives" onclick="lives = 2; paddleWidth=60; difficultyChosen = true; bothDone();">Medium</button>
+<button class="button buttonHard" id="Btn3" title = "Tiny paddle and only 1 life" onclick="lives = 1; paddleWidth=20; difficultyChosen = true; bothDone();">Hard</button>
 <br>
+<form name="theForm" id="theForm">
+    <label for="rowsInput">Input the number of rows you would like (maximum 6)</label><br>
+    <input type="number" id="rowNumber" name="rowNumber" value=3>
+    <input type="button" onclick = "rowsInputted();" value="Submit">
+</form></center>
 <canvas id="myCanvas" width="480" height="320">
 </canvas>
 
@@ -49,26 +54,48 @@
  var score = 0;
  var lives = 3;
  var paused = false;
+ var difficultyChosen = false;
+ var rowsChosen = false;
  let x = canvas.width/2;
  let y = canvas.height-30;
  let dx = 2;
  let dy = -2;
 
- var bricks = []; //list of bricks
- for(var c=0; c<brickColumnCount; c++) { //c is like an iteration variable in python. It increments by 1 on each loop. Loop ends when c >= column count.
-    bricks[c] = []; // Creates a 2d array. Each column has its own list
-    for(var r=0; r<brickRowCount; r++) {
-        bricks[c][r] = { x: 0, y:0, status:1 }; //status 1 means the brick hasn't been destroyed
+ function bothDone(){
+    if(rowsChosen == true && difficultyChosen == true) { //If both forms have been submitted
+        draw();
     }
  }
+
+ function rowsInputted() {
+    var rows = document.getElementById("rowNumber").value;
+    if(rows<1) {
+        alert("Not enough rows");
+        rowsChosen = false;
+    }
+    else if(rows>6) {
+        alert("Too many rows");
+        rowsChosen = false;
+    }
+    else {
+        brickRowCount = rows;
+        rowsChosen = true;
+        var form = document.getElementById("theForm");
+        form.style.visibility = "hidden";
+        bothDone();
+    }
+ }
+
+ 
+ 
  
  document.addEventListener("keydown", keyDownHandler, false);
  document.addEventListener("keyup", keyUpHandler, false);
  document.addEventListener("mousemove", mouseMoveHandler, false);
- Btn1 = document.getElementById("Btn1")
- Btn2 = document.getElementById("Btn2")
- Btn3 = document.getElementById("Btn3")
- const startText = document.getElementById("startText")
+ var Btn1 = document.getElementById("Btn1");
+ var Btn2 = document.getElementById("Btn2");
+ var Btn3 = document.getElementById("Btn3");
+ const startText = document.getElementById("startText");
  Btn1.addEventListener("click", () => {
     Btn1.style.visibility = "hidden";
     Btn2.style.visibility = "hidden";
@@ -112,42 +139,6 @@
     var relativeX = e.clientX - canvas.offsetLeft; //Distance from left edge
     if(relativeX >  paddleWidth/2 && relativeX < canvas.width-paddleWidth/2) { //If the mouse is in the canvas
         paddleX = relativeX - paddleWidth/2; //paddle location is set to mouse location
-    }
- }
-
- function brickExplosion(brick) {
-    var startTime =  new Date().getTime()
-    var currentTime =  new Date().getTime()
-    var elapsedTime = 0
-    while(elapsedTime<1000) {
-        currentTime =  new Date().getTime()
-        ctx.beginPath();
-        ctx.rect(brick.x, brick.y, brickWidth, brickHeight);        //Random (but broken) dot code - ctx.rect(Math.floor(Math.random()*brick.x+brickWidth)+brick.x, Math.floor(Math.random()*brick.y-brickHeight)+brick.y, 2, 2)
-        ctx.fillStyle = "orange";
-        ctx.fill();
-        ctx.closePath();
-        elapsedTime = currentTime - startTime;
-    }
- }
- 
-
- function collisionDetection() {
-    for(var c=0; c<brickColumnCount; c++){
-        for(var r=0; r<brickRowCount; r++){ //Iterates through every brick in the array
-            var brick = bricks[c][r]; //Stores each brick as brick
-            if(brick.status == 1){
-                if(x > brick.x && x < brick.x+brickWidth && y > brick.y && y < brick.y+brickHeight) { //If the ball is between the x and y values of the brick
-                    brickExplosion(brick);
-                    brick.status = 0;  //brick is now destroyed
-                    dy = -dy; //Changes direction
-                    score++;
-                    if(score == brickRowCount*brickColumnCount){
-                        alert("CONGRATULATIONS, you have won!");
-                        document.location.reload(); //reloads the page
-                    }
-                }
-            }
-        }
     }
  }
 
@@ -196,11 +187,17 @@
         }
     }
  }
- 
+ var bricks = []; //list of bricks
+            for(var c=0; c<brickColumnCount; c++) { //c is like an iteration variable in python. It increments by 1 on each loop. Loop ends when c >= column count.
+                bricks[c] = []; // Creates a 2d array. Each column has its own list
+                for(var r=0; r<brickRowCount; r++) {
+                    bricks[c][r] = { x: 0, y:0, status:1 }; //status 1 means the brick hasn't been destroyed
+                }
+            }    
  function drawBricks() {
     for(var c=0; c<brickColumnCount; c++) {
         for(var r=0; r<brickRowCount; r++) {
-            if(bricks[c][r].status==1) { //Draw if brick hasn't been hit
+            if(bricks[c][r].status ==1) { //Draw if brick hasn't been hit
                 var brickX = (c*(brickWidth+brickPadding)) +brickOffsetLeft; //x coordinate is the column X width (including padding) + the offset 
                 var brickY = (r*(brickHeight+brickPadding)) + brickOffsetTop;
                 bricks[c][r].x = brickX;
@@ -222,6 +219,25 @@
 
         }
     }   
+ }
+
+ function collisionDetection() {
+    for(var c=0; c<brickColumnCount; c++){
+        for(var r=0; r<brickRowCount; r++){ //Iterates through every brick in the array
+            var brick = bricks[c][r]; //Stores each brick as brick
+            if(brick.status == 1){
+                if(x > brick.x && x < brick.x+brickWidth && y > brick.y && y < brick.y+brickHeight) { //If the ball is between the x and y values of the brick
+                    brick.status = 0;  //brick is now destroyed
+                    dy = -dy; //Changes direction
+                    score++;
+                    if(score == brickRowCount*brickColumnCount){
+                        alert("CONGRATULATIONS, you have won!");
+                        document.location.reload(); //reloads the page
+                    }
+                }
+            }
+        }
+    }
  }
  
 
@@ -274,7 +290,10 @@
   
     
  }
+
  
+
+    
  
 
  
