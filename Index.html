@@ -32,7 +32,17 @@
     <label for="rowsInput">Input the number of rows you would like (maximum 8)</label><br>
     <input class="input inputBox" type="number" id="rowNumber" name="rowNumber" value=3>
     <input class="button submitButton" type="button" onclick = "rowsInputted();" value="Submit">
-</form></center>
+</form>
+<br>
+<form name="theForm2" id="theForm">
+    <label for="playerInput">Select the number of players</label><br>
+    <input type="radio" id="1player" name="players" value="1 Player">
+    <label for="1player">1 Player</label><br>
+    <input type="radio" id="2player" name="players" value="2 Players">
+    <label for="2player">2 Players</label><br>
+    <input class="button submitButton"  type="submit" value="Submit">
+</form>
+</center>
 <br>
 <canvas id="myCanvas" width="480" height="320">
 </canvas>
