@@ -24,9 +24,9 @@
 <br>
 <center><h2 style="font-family:Lucida Console" id="startText">Choose your difficulty to begin</h2>
 <br>
-<button class="button buttonEasy" id="Btn1" title = "Large paddle and 3 lives" onclick="lives = 3; paddleWidth=100; difficultyChosen = true; bothDone();">Easy</button>
-<button class="button buttonMedium" id="Btn2" title = "Normal-sized paddle and 2 lives" onclick="lives = 2; paddleWidth=60; difficultyChosen = true; bothDone();">Medium</button>
-<button class="button buttonHard" id="Btn3" title = "Tiny paddle and only 1 life" onclick="lives = 1; paddleWidth=20; difficultyChosen = true; bothDone();">Hard</button>
+<button class="button buttonEasy" id="Btn1" title = "Large paddle and 3 lives" onclick="lives = 3; paddleWidth=100; difficultyChosen = true; allDone();">Easy</button>
+<button class="button buttonMedium" id="Btn2" title = "Normal-sized paddle and 2 lives" onclick="lives = 2; paddleWidth=60; difficultyChosen = true; allDone();">Medium</button>
+<button class="button buttonHard" id="Btn3" title = "Tiny paddle and only 1 life" onclick="lives = 1; paddleWidth=20; difficultyChosen = true; allDone();">Hard</button>
 <br>
 <form name="theForm" id="theForm">
     <label for="rowsInput">Input the number of rows you would like (maximum 8)</label><br>
@@ -34,13 +34,13 @@
     <input class="button submitButton" type="button" onclick = "rowsInputted();" value="Submit">
 </form>
 <br>
-<form name="theForm2" id="theForm">
+<form name="theForm2" id="theForm2">
     <label for="playerInput">Select the number of players</label><br>
-    <input type="radio" id="1player" name="players" value="1 Player">
+    <input type="radio" id="1player" name="players" value=1>
     <label for="1player">1 Player</label><br>
-    <input type="radio" id="2player" name="players" value="2 Players">
+    <input type="radio" id="2player" name="players" value=2>
     <label for="2player">2 Players</label><br>
-    <input class="button submitButton"  type="submit" value="Submit">
+    <input class="button submitButton"  type="button" onclick = "playersInputted();" value="Submit">
 </form>
 </center>
 <br>
@@ -70,6 +70,7 @@
  var paused = false;
  var difficultyChosen = false;
  var rowsChosen = false;
+ var playersChosen = false;
  var count = 0;
  var bricks = []; //list of bricks
  let x = canvas.width/2;
@@ -77,8 +78,8 @@
  let dx = 2;
  let dy = -2;
 
- function bothDone(){
-    if(rowsChosen == true && difficultyChosen == true) { //If both forms have been submitted
+ function allDone(){
+    if(rowsChosen == true && difficultyChosen == true &&  playersChosen == true) { //If both forms have been submitted
         draw();
     }
  }
@@ -98,10 +99,24 @@
         rowsChosen = true;
         var form = document.getElementById("theForm");
         form.style.visibility = "hidden";
-        bothDone();
+        allDone();
     }
  }
 
+ function playersInputted() {
+    var playersSelected;
+    var question = document.getElementsByName("players");
+    for(var i=0;i<question.length;i++) {
+        if(question[i].checked == true) {
+            playersSelected = question[i].value;
+            playersChosen = true;
+            var form2 = document.getElementById("theForm2");
+            form2.style.visibility = "hidden";
+            allDone();
+            break;
+        }
+    }
+ }
  
  
  
@@ -203,6 +218,8 @@
         }
     }
  }
+
+
 
 
     
