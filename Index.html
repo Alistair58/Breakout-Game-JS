@@ -56,6 +56,8 @@
  var paused = false;
  var difficultyChosen = false;
  var rowsChosen = false;
+ var count = 0;
+ var bricks = []; //list of bricks
  let x = canvas.width/2;
  let y = canvas.height-30;
  let dx = 2;
@@ -187,13 +189,11 @@
         }
     }
  }
- var bricks = []; //list of bricks
-            for(var c=0; c<brickColumnCount; c++) { //c is like an iteration variable in python. It increments by 1 on each loop. Loop ends when c >= column count.
-                bricks[c] = []; // Creates a 2d array. Each column has its own list
-                for(var r=0; r<brickRowCount; r++) {
-                    bricks[c][r] = { x: 0, y:0, status:1 }; //status 1 means the brick hasn't been destroyed
-                }
-            }    
+
+
+    
+
+
  function drawBricks() {
     for(var c=0; c<brickColumnCount; c++) {
         for(var r=0; r<brickRowCount; r++) {
@@ -205,20 +205,23 @@
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
                 if(r==0){
-                ctx.fillStyle = "#e82a43";
+                    ctx.fillStyle = "#e82a43";
                 }
                 else if(r==1){
-                ctx.fillStyle = "#1cd60f";
+                    ctx.fillStyle = "#1cd60f";
+                }
+                else if(r==2){
+                    ctx.fillStyle = "#ebb821";
                 }
                 else{
-                ctx.fillStyle = "#ebb821";
+                    ctx.fillStyle = "#ff99ff"
                 }
                 ctx.fill();
                 ctx.closePath();
             }
 
         }
-    }   
+    }  
  }
 
  function collisionDetection() {
@@ -274,6 +277,16 @@
 
  function draw() {
     //clears screen so it doesn't leave a trail
+    count ++
+    if (count == 1) {
+        alert("Working")
+        for(var c=0; c<brickColumnCount; c++) { //c is like an iteration variable in python. It increments by 1 on each loop. Loop ends when c >= column count.
+            bricks[c] = []; // Creates a 2d array. Each column has its own list
+            for(var r=0; r<brickRowCount; r++) {
+                bricks[c][r] = { x: 0, y:0, status:1 }; //status 1 means the brick hasn't been destroyed
+            }
+        } 
+    }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawBall();
