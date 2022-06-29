@@ -79,6 +79,7 @@
  var count = 0;
  var bricks = []; //list of bricks
  var playersSelected = 0;
+ var colourList = ["#e82a43","#1cd60f","#ebb821","#ff99ff","#d67f1c","#9121db","#21dbc5" ,"#fa0590"]
  let x = canvas.width/2;
  let y = canvas.height-30;
  let dx = 2;
@@ -112,7 +113,7 @@
  function playersInputted() {
     var question = document.getElementsByName("players");
     for(var i=0;i<question.length;i++) {
-        if(question[i].checked == true) {
+        if(question[i].checked == true) { //If the box is tickedd
             playersSelected = question[i].value;
             playersChosen = true;
             var form2 = document.getElementById("theForm2");
@@ -122,9 +123,7 @@
         }
     }
  }
- 
- 
- 
+
  document.addEventListener("keydown", keyDownHandler, false);
  document.addEventListener("keyup", keyUpHandler, false);
  document.addEventListener("mousemove", mouseMoveHandler, false);
@@ -152,8 +151,6 @@
     startText.style.visibility = "hidden";
  });
  
- 
-
  function keyDownHandler(pressed) {
     if(pressed.key == "Right" || pressed.key == "ArrowRight") {
         rightPressed = true;
@@ -181,7 +178,7 @@
 
  function P2mouseMoveHandler(e) {
     var P2relativeX = e.clientX - canvas.offsetLeft; //Distance from left edge
-    if(P2relativeX >  paddleWidth/2 && P2relativeX < canvas.width-paddleWidth/2 && P2relativeX > canvas.width/2+paddleWidth/2) { //If the mouse is in the canvas
+    if(P2relativeX >  paddleWidth/2 && P2relativeX < canvas.width-paddleWidth/2 && P2relativeX > canvas.width/2+paddleWidth/2) { //If the mouse is on the right side of the canvas
         P2paddleX = P2relativeX - paddleWidth/2; //paddle location is set to mouse location
     }
  }
@@ -264,11 +261,6 @@
     ctx.closePath();
  }
 
-
-
-    
-
-
  function drawBricks() {
     for(var c=0; c<brickColumnCount; c++) {
         for(var r=0; r<brickRowCount; r++) {
@@ -279,30 +271,7 @@
                 bricks[c][r].y = brickY;
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                if(r==0){
-                    ctx.fillStyle = "#e82a43";
-                }
-                else if(r==1){
-                    ctx.fillStyle = "#1cd60f";
-                }
-                else if(r==2){
-                    ctx.fillStyle = "#ebb821";
-                }
-                else if(r==3){
-                    ctx.fillStyle = "#ff99ff";
-                }
-                else if(r==4){
-                    ctx.fillStyle = "#d67f1c";
-                }
-                else if(r==5){
-                    ctx.fillStyle = "#9121db";
-                }
-                else if(r==6){
-                    ctx.fillStyle = "#21dbc5";
-                }
-                else{
-                    ctx.fillStyle = "#fa0590";
-                }
+                ctx.fillStyle = colourList[r]
                 ctx.fill();
                 ctx.closePath();
             }
@@ -359,7 +328,7 @@
         }
     }
     else {
-        if((x+ballRadius > P1paddleX && x-ballRadius < P1paddleX + paddleWidth && y + dy > (canvas.height-paddleHeight)-ballRadius+5)  || (x+ballRadius > P2paddleX && x-ballRadius < P2paddleX + paddleWidth && y + dy > (canvas.height-paddleHeight)-ballRadius+5)) { // If the x and y coordinates of the ball is between each end of the paddle it bounces. 5 just seems to make it bounce in the right place
+        if((x+ballRadius > P1paddleX && x-ballRadius < P1paddleX + paddleWidth && y + dy > (canvas.height-paddleHeight)-ballRadius+5)  || (x+ballRadius > P2paddleX && x-ballRadius < P2paddleX + paddleWidth && y + dy > (canvas.height-paddleHeight)-ballRadius+5)) { // If the x and y coordinates of the ball is between each end of either paddle it bounces. 5 just seems to make it bounce in the right place
         dy = -dy;
         }
         else if(y + dy > canvas.height-ballRadius) { //If ball hits the bottom
@@ -369,7 +338,7 @@
             document.location.reload();
             }
             else { //If there are lives left, the ball and paddle are reset
-                x = Math.floor(Math.random()*canvas.width-ballRadius)+ballRadius;
+                x = Math.floor(Math.random()*canvas.width-ballRadius)+ballRadius; //respawns the ball in a random location
                 y = canvas.height-30;
                 dx = 2;
                 dy = -2;
@@ -379,11 +348,6 @@
         }
     }
  }
- 
-          
- 
-
- 
 
  function draw() {
     //clears screen so it doesn't leave a trail
@@ -418,13 +382,6 @@
   
     
  }
-
- 
-
-    
- 
-
- 
 </script>
 
 </body>
