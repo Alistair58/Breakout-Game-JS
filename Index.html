@@ -40,6 +40,7 @@
     <label for="1player">1 Player</label><br>
     <input type="radio" id="2player" name="players" value=2>
     <label for="2player">2 Players</label><br>
+    <p> (Left is controlled by arrow keys, right controlled by mouse)</p>
     <input class="button submitButton"  type="button" onclick = "playersInputted();" value="Submit">
 </form>
 </center>
@@ -127,6 +128,7 @@
  document.addEventListener("keydown", keyDownHandler, false);
  document.addEventListener("keyup", keyUpHandler, false);
  document.addEventListener("mousemove", mouseMoveHandler, false);
+ document.addEventListener("mousemove", P2mouseMoveHandler, false);
  var Btn1 = document.getElementById("Btn1");
  var Btn2 = document.getElementById("Btn2");
  var Btn3 = document.getElementById("Btn3");
@@ -177,10 +179,10 @@
     }
  }
 
- function p2mouseMoveHandler(e) {
+ function P2mouseMoveHandler(e) {
     var P2relativeX = e.clientX - canvas.offsetLeft; //Distance from left edge
-    if(P2relativeX >  paddleWidth/2 && P2relativeX < canvas.width-paddleWidth/2 && P2relativeX < canvas.width/2-paddleWidth/2) { //If the mouse is in the canvas
-        P2paddleX = p2relativeX - paddleWidth/2; //paddle location is set to mouse location
+    if(P2relativeX >  paddleWidth/2 && P2relativeX < canvas.width-paddleWidth/2 && P2relativeX > canvas.width/2+paddleWidth/2) { //If the mouse is in the canvas
+        P2paddleX = P2relativeX - paddleWidth/2; //paddle location is set to mouse location
     }
  }
 
