@@ -2,6 +2,7 @@
 <head>
  <meta charset="utf-8"/>
  <title>Breakout Game</title>
+ 
  <style>
     .buttonHard {font-family:"Lucida Console";width: 50%;font-size:30px;cursor:pointer;transition-duration: 0.4s;border-radius: 10px;border-color:black;background-color:#e82a43;}
     * {padding: 0;margin:0;}
@@ -26,7 +27,7 @@
 <button class="button buttonHard" id="Btn3" title = "Tiny paddle and only 1 life" onclick="lives = 1; paddleWidth=20; difficultyChosen = true; bothDone();">Hard</button>
 <br>
 <form name="theForm" id="theForm">
-    <label for="rowsInput">Input the number of rows you would like (maximum 6)</label><br>
+    <label for="rowsInput">Input the number of rows you would like (maximum 8)</label><br>
     <input type="number" id="rowNumber" name="rowNumber" value=3>
     <input type="button" onclick = "rowsInputted();" value="Submit">
 </form></center>
@@ -75,7 +76,7 @@
         alert("Not enough rows");
         rowsChosen = false;
     }
-    else if(rows>6) {
+    else if(rows>8) {
         alert("Too many rows");
         rowsChosen = false;
     }
@@ -213,8 +214,20 @@
                 else if(r==2){
                     ctx.fillStyle = "#ebb821";
                 }
+                else if(r==3){
+                    ctx.fillStyle = "#ff99ff";
+                }
+                else if(r==4){
+                    ctx.fillStyle = "#d67f1c";
+                }
+                else if(r==5){
+                    ctx.fillStyle = "#9121db";
+                }
+                else if(r==6){
+                    ctx.fillStyle = "#21dbc5";
+                }
                 else{
-                    ctx.fillStyle = "#ff99ff"
+                    ctx.fillStyle = "#fa0590";
                 }
                 ctx.fill();
                 ctx.closePath();
@@ -252,7 +265,7 @@
     if(y + dy < ballRadius) { //If ball bounces off the top
         dy = -dy;            
     }
-    if(x > paddleX && x < paddleX + paddleWidth && y + dy > (canvas.height-paddleHeight)-ballRadius+5) { // If the x and y coordinates of the ball is between each end of the paddle it bounces. 5 just seems to make it bounce in the right place
+    if(x+ballRadius > paddleX && x-ballRadius < paddleX + paddleWidth && y + dy > (canvas.height-paddleHeight)-ballRadius+5) { // If the x and y coordinates of the ball is between each end of the paddle it bounces. 5 just seems to make it bounce in the right place
         dy = -dy;
     }
     else if(y + dy > canvas.height-ballRadius) { //If ball hits the bottom
@@ -278,8 +291,7 @@
  function draw() {
     //clears screen so it doesn't leave a trail
     count ++
-    if (count == 1) {
-        alert("Working")
+    if (count == 1) { //If it's the first loop create the brick list
         for(var c=0; c<brickColumnCount; c++) { //c is like an iteration variable in python. It increments by 1 on each loop. Loop ends when c >= column count.
             bricks[c] = []; // Creates a 2d array. Each column has its own list
             for(var r=0; r<brickRowCount; r++) {
