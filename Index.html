@@ -14,6 +14,8 @@
     * {padding: 0;margin:0;}
     .buttonEasy:hover{background-color:white;border-color:#1cd60f;}
     .buttonPause {width:5%;font-size:50px;background-color:#e82a43;;cursor:pointer;border-radius:3px}
+    .inputBox {background-color:black;color:white;border-radius: 5px;}
+    .submitButton {background-color:black;color:white;border-radius: 5px;}
     canvas { background: black; display: block; margin: 0 auto; }
  </style>
 </head>
@@ -28,9 +30,10 @@
 <br>
 <form name="theForm" id="theForm">
     <label for="rowsInput">Input the number of rows you would like (maximum 8)</label><br>
-    <input type="number" id="rowNumber" name="rowNumber" value=3>
-    <input type="button" onclick = "rowsInputted();" value="Submit">
+    <input class="input inputBox" type="number" id="rowNumber" name="rowNumber" value=3>
+    <input class="button submitButton" type="button" onclick = "rowsInputted();" value="Submit">
 </form></center>
+<br>
 <canvas id="myCanvas" width="480" height="320">
 </canvas>
 
