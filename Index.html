@@ -79,11 +79,13 @@
  var count = 0;
  var bricks = []; //list of bricks
  var playersSelected = 0;
- var colourList = ["#e82a43","#1cd60f","#ebb821","#ff99ff","#d67f1c","#9121db","#21dbc5" ,"#fa0590"]
+ var colourList = ["#e82a43","#1cd60f","#ebb821","#ff99ff","#d67f1c","#9121db","#21dbc5" ,"#fa0590"];
+ var level = 1;
+ var dx = 2;
+ var dy = -2;
  let x = canvas.width/2;
  let y = canvas.height-30;
- let dx = 2;
- let dy = -2;
+ 
 
  function allDone(){
     if(rowsChosen == true && difficultyChosen == true &&  playersChosen == true) { //If both forms have been submitted
@@ -194,6 +196,13 @@
     ctx.fillText("Lives: "+lives, canvas.width-85, 20);
  }
 
+ function drawLevel() {
+    ctx.font = "16px Lucida Console";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Level: "+level, canvas.width/2-50, 20);
+ }
+
+
  function drawBall() {
     //white circle with black outline
     ctx.beginPath();
@@ -290,8 +299,23 @@
                     dy = -dy; //Changes direction
                     score++;
                     if(score == brickRowCount*brickColumnCount){
-                        alert("CONGRATULATIONS, you have won!");
-                        document.location.reload(); //reloads the page
+                        alert("CONGRATULATIONS, level passed");
+                        level ++;
+                        if(dy < 0) {
+                            dy -= 0.1;
+                            dx += 0.1;
+                        }
+                        else {
+                            dy = -dy;
+                            dy -= 0.1;
+                            dx += 0.1;
+                        }
+                        score = 0;
+                        count = 0;
+                        x = Math.floor(Math.random()*canvas.width-ballRadius)+ballRadius+1;
+                        y = canvas.height-30;
+                        draw();
+                        
                     }
                 }
             }
@@ -319,7 +343,7 @@
                 document.location.reload();
             }
             else { //If there are lives left, the ball and paddle are reset
-                x = Math.floor(Math.random()*canvas.width-ballRadius)+ballRadius;
+                x = Math.floor(Math.random()*canvas.width-ballRadius)+ballRadius+1;
                 y = canvas.height-30;
                 dx = 2;
                 dy = -2;
@@ -372,6 +396,7 @@
     }
     drawScore();
     drawLives();
+    drawLevel()
     collisionDetection();
     bounce();
     if (paused == true){
