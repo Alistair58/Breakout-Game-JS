@@ -47,12 +47,12 @@
 <br>
 <canvas id="myCanvas" width="480" height="320">
 </canvas>
+</body>
 
 <script>
  var canvas = document.getElementById("myCanvas");
  var ctx = canvas.getContext("2d");
  var ballRadius = 10;
- var speed = 10;
  var paddleHeight = 10;
  var paddleWidth = 60;
  var paddleX = (canvas.width-paddleWidth) / 2;
@@ -83,12 +83,69 @@
  var level = 1;
  var dx = 2;
  var dy = -2;
+ var totalScore = 0;
+ var resetCount = 0;
+ var showHighscore = false;
  let x = canvas.width/2;
  let y = canvas.height-30;
  
+ function reset() {
+    resetCount++
+    ballRadius = 10;
+    paddleHeight = 10;
+    paddleWidth = 60;
+    paddleX = (canvas.width-paddleWidth) / 2;
+    paddleY = (canvas.height-paddleHeight);
+    P1paddleX = (canvas.width-paddleWidth) / 4;
+    P1paddleY = (canvas.height-paddleHeight);
+    P2paddleX = ((canvas.width-paddleWidth) / 4)*3;
+    P2paddleY = (canvas.height-paddleHeight);
+    rightPressed = false;
+    leftPressed = false;
+    brickRowCount = 3;
+    brickColumnCount = 5;
+    brickWidth = 75;
+    brickHeight = 20;
+    brickPadding = 10;
+    brickOffsetTop = 30;
+    brickOffsetLeft = 30;
+    score = 0;
+    lives = 3;
+    paused = false;
+    difficultyChosen = false;
+    rowsChosen = false;
+    playersChosen = false;
+    count = 0;
+    bricks = []; //list of bricks
+    playersSelected = 0;
+    level = 1;
+    dx = 0;
+    dy = 0;
+    totalScore = 0;
+    done = false;
+    Btn1.style.visibility = "visible";
+    Btn2.style.visibility = "visible";
+    Btn3.style.visibility = "visible";
+    startText.style.visibility = "visible";
+    var form = document.getElementById("theForm");
+    form.style.visibility = "visible";
+    var form2 = document.getElementById("theForm2");
+    form2.style.visibility = "visible";
+ }
+ 
+ 
+ function createItem() {
+    localStorage.setItem("highscore",totalScore)
+ }
+ function getValue() {
+    return localStorage.getItem("highscore")
+ }
+
 
  function allDone(){
     if(rowsChosen == true && difficultyChosen == true &&  playersChosen == true) { //If both forms have been submitted
+        dx = 2;
+        dy = -2;
         draw();
     }
  }
@@ -185,6 +242,11 @@
     }
  }
 
+ function drawHighscore(){
+    ctx.font = "16px Lucida Console";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Highscore: "+getValue(), canvas.width/2,20);
+ }
  function drawScore() {
     ctx.font = "16px Lucida Console";
     ctx.fillStyle = "#0095DD";
@@ -199,7 +261,7 @@
  function drawLevel() {
     ctx.font = "16px Lucida Console";
     ctx.fillStyle = "#0095DD";
-    ctx.fillText("Level: "+level, canvas.width/2-50, 20);
+    ctx.fillText("Level: "+level, canvas.width/2-115, 20);
  }
 
 
@@ -298,6 +360,7 @@
                     brick.status = 0;  //brick is now destroyed
                     dy = -dy; //Changes direction
                     score++;
+                    totalScore++;
                     if(score == brickRowCount*brickColumnCount){
                         alert("CONGRATULATIONS, level passed");
                         level ++;
@@ -312,7 +375,7 @@
                         }
                         score = 0;
                         count = 0;
-                        x = Math.floor(Math.random()*canvas.width-ballRadius)+ballRadius+1;
+                        x = Math.floor(Math.random()*canvas.width-ballRadius-1)+ballRadius+1;
                         y = canvas.height-30;
                         draw();
                         
@@ -338,12 +401,22 @@
         }
         else if(y + dy > canvas.height-ballRadius) { //If ball hits the bottom
             lives--;
-            if(!lives) {
+            if(lives==0) {
                 alert("GAME OVER");
-                document.location.reload();
+                if(resetCount ==0){
+                    createItem();
+                    showHighscore = true;
+                    drawHighscore();
+                }
+                else{
+                    if(totalScore>getValue()){
+                        createItem()
+                    }
+                }
+                reset();
             }
             else { //If there are lives left, the ball and paddle are reset
-                x = Math.floor(Math.random()*canvas.width-ballRadius)+ballRadius+1;
+                x = Math.floor(Math.random()*canvas.width-ballRadius-1)+ballRadius+1;
                 y = canvas.height-30;
                 dx = 2;
                 dy = -2;
@@ -357,9 +430,9 @@
         }
         else if(y + dy > canvas.height-ballRadius) { //If ball hits the bottom
             lives--;
-            if(!lives) {
-            alert("GAME OVER");
-            document.location.reload();
+            if(lives==0) {
+                alert("GAME OVER");
+                document.location.reload();
             }
             else { //If there are lives left, the ball and paddle are reset
                 x = Math.floor(Math.random()*canvas.width-ballRadius)+ballRadius; //respawns the ball in a random location
@@ -390,13 +463,16 @@
     if(playersSelected==1) {
         drawPaddle();
     }
-    else {
+    else if(playersSelected==2){
         P1drawPaddle();
         P2drawPaddle();
     }
     drawScore();
     drawLives();
-    drawLevel()
+    drawLevel();
+    if(showHighscore==true){
+        drawHighscore();
+    }
     collisionDetection();
     bounce();
     if (paused == true){
