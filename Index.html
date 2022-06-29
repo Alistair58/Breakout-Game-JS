@@ -56,6 +56,10 @@
  var paddleWidth = 60;
  var paddleX = (canvas.width-paddleWidth) / 2;
  var paddleY = (canvas.height-paddleHeight);
+ var P1paddleX = (canvas.width-paddleWidth) / 4;
+ var P1paddleY = (canvas.height-paddleHeight);
+ var P2paddleX = ((canvas.width-paddleWidth) / 4)*3;
+ var P2paddleY = (canvas.height-paddleHeight);
  var rightPressed = false;
  var leftPressed = false;
  var brickRowCount = 3;
@@ -73,6 +77,7 @@
  var playersChosen = false;
  var count = 0;
  var bricks = []; //list of bricks
+ var playersSelected = 0;
  let x = canvas.width/2;
  let y = canvas.height-30;
  let dx = 2;
@@ -104,7 +109,6 @@
  }
 
  function playersInputted() {
-    var playersSelected;
     var question = document.getElementsByName("players");
     for(var i=0;i<question.length;i++) {
         if(question[i].checked == true) {
@@ -173,6 +177,13 @@
     }
  }
 
+ function p2mouseMoveHandler(e) {
+    var P2relativeX = e.clientX - canvas.offsetLeft; //Distance from left edge
+    if(P2relativeX >  paddleWidth/2 && P2relativeX < canvas.width-paddleWidth/2 && P2relativeX < canvas.width/2-paddleWidth/2) { //If the mouse is in the canvas
+        P2paddleX = p2relativeX - paddleWidth/2; //paddle location is set to mouse location
+    }
+ }
+
  function drawScore() {
     ctx.font = "16px Lucida Console";
     ctx.fillStyle = "#0095DD";
@@ -219,6 +230,37 @@
     }
  }
 
+ function P1drawPaddle() {
+    ctx.beginPath();
+    ctx.rect(P1paddleX, P1paddleY, paddleWidth, paddleHeight);
+    ctx.fillStyle = "blue";
+    ctx.fill();
+    ctx.strokeStyle = "black";
+    ctx.stroke();
+    ctx.closePath();
+    if(rightPressed) {
+        P1paddleX += 5;
+        if (P1paddleX + paddleWidth > canvas.width/2){
+            P1paddleX = canvas.width/2 - paddleWidth;
+        }
+    }
+    else if(leftPressed) {
+        P1paddleX -= 5;
+        if (P1paddleX < 0){
+            P1paddleX = 0;
+        }
+    }
+ }
+
+ function P2drawPaddle() {
+    ctx.beginPath();
+    ctx.rect(P2paddleX, P2paddleY, paddleWidth, paddleHeight);
+    ctx.fillStyle = "blue";
+    ctx.fill();
+    ctx.strokeStyle = "black";
+    ctx.stroke();
+    ctx.closePath();
+ }
 
 
 
@@ -295,24 +337,47 @@
     if(y + dy < ballRadius) { //If ball bounces off the top
         dy = -dy;            
     }
-    if(x+ballRadius > paddleX && x-ballRadius < paddleX + paddleWidth && y + dy > (canvas.height-paddleHeight)-ballRadius+5) { // If the x and y coordinates of the ball is between each end of the paddle it bounces. 5 just seems to make it bounce in the right place
+    if(playersSelected==1) {
+        if(x+ballRadius > paddleX && x-ballRadius < paddleX + paddleWidth && y + dy > (canvas.height-paddleHeight)-ballRadius+5) { // If the x and y coordinates of the ball is between each end of the paddle it bounces. 5 just seems to make it bounce in the right place
         dy = -dy;
+        }
+        else if(y + dy > canvas.height-ballRadius) { //If ball hits the bottom
+            lives--;
+            if(!lives) {
+                alert("GAME OVER");
+                document.location.reload();
+            }
+            else { //If there are lives left, the ball and paddle are reset
+                x = Math.floor(Math.random()*canvas.width-ballRadius)+ballRadius;
+                y = canvas.height-30;
+                dx = 2;
+                dy = -2;
+                paddleX = (canvas.width-paddleWidth)/2;
+            }
+        }
     }
-    else if(y + dy > canvas.height-ballRadius) { //If ball hits the bottom
-        lives--;
-        if(!lives) {
+    else {
+        if((x+ballRadius > P1paddleX && x-ballRadius < P1paddleX + paddleWidth && y + dy > (canvas.height-paddleHeight)-ballRadius+5)  || (x+ballRadius > P2paddleX && x-ballRadius < P2paddleX + paddleWidth && y + dy > (canvas.height-paddleHeight)-ballRadius+5)) { // If the x and y coordinates of the ball is between each end of the paddle it bounces. 5 just seems to make it bounce in the right place
+        dy = -dy;
+        }
+        else if(y + dy > canvas.height-ballRadius) { //If ball hits the bottom
+            lives--;
+            if(!lives) {
             alert("GAME OVER");
             document.location.reload();
-        }
-        else { //If there are lives left, the ball and paddle are reset
-            x = Math.floor(Math.random()*canvas.width-ballRadius)+ballRadius;
-            y = canvas.height-30;
-            dx = 2;
-            dy = -2;
-            paddleX = (canvas.width-paddleWidth)/2;
+            }
+            else { //If there are lives left, the ball and paddle are reset
+                x = Math.floor(Math.random()*canvas.width-ballRadius)+ballRadius;
+                y = canvas.height-30;
+                dx = 2;
+                dy = -2;
+                paddleX = (canvas.width-paddleWidth)/2;
+            }
+    
         }
     }
  }
+ 
           
  
 
@@ -332,7 +397,13 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawBall();
-    drawPaddle();
+    if(playersSelected==1) {
+        drawPaddle();
+    }
+    else {
+        P1drawPaddle();
+        P2drawPaddle();
+    }
     drawScore();
     drawLives();
     collisionDetection();
