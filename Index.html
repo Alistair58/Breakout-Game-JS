@@ -33,9 +33,9 @@
 <br>
 <center><h2 style="font-family:Lucida Console" id="startText">Choose your difficulty to begin</h2>
 <br>
-<button class="button buttonEasy" id="Btn1" title = "Large paddle and 3 lives" onclick="lives = 3; paddleWidth=100; difficultyChosen = true; allDone();">Easy</button>
-<button class="button buttonMedium" id="Btn2" title = "Normal-sized paddle and 2 lives" onclick="lives = 2; paddleWidth=60; difficultyChosen = true; allDone();">Medium</button>
-<button class="button buttonHard" id="Btn3" title = "Tiny paddle and only 1 life" onclick="lives = 1; paddleWidth=20; difficultyChosen = true; allDone();">Hard</button>
+<button class="button buttonEasy" id="Btn1" title = "Large paddle and 3 lives" onclick="lives = 3; paddleWidth=100; difficultyChosen = true; difficulty = 1;  allDone();">Easy</button>
+<button class="button buttonMedium" id="Btn2" title = "Normal-sized paddle and 2 lives" onclick="lives = 2; paddleWidth=60; difficultyChosen = true; difficulty = 2; allDone();">Medium</button>
+<button class="button buttonHard" id="Btn3" title = "Tiny paddle and only 1 life" onclick="lives = 1; paddleWidth=20; difficultyChosen = true; difficulty = 3; allDone();">Hard</button>
 <br>
 <form name="theForm" id="theForm">
     <label for="rowsInput">Input the number of rows you would like (maximum 8)</label><br>
@@ -106,6 +106,7 @@
  var leveldx = 2.5;
  var doublePoints = false;
  var brickGoneCount = 0;
+ var difficulty = "";
  let x = canvas.width/2;
  let y = canvas.height-30;
  
@@ -450,14 +451,39 @@
                                 dx -=1;
                             }
                         }
+                        else if(ability=="doublePoints"){
+                            doublePoints = true;
+                        }
+                        else if(ability=="paddleSmaller"){
+                            if(difficulty == 1){
+                                paddleWidth = 60;
+                            }
+                            else if(difficulty==2){
+                                paddleWidth = 20;
+                            }
+                            
+                            else if(difficulty == 3){
+                             paddleWidth = 10;
+                            }
+                        }
+                        else if(ability=="paddleBigger"){
+                            if(difficulty == 1){
+                                paddleWidth = 150;
+                            }
+                            else if(difficulty==2){
+                                paddleWidth = 100;
+                            }
+                            
+                            else if(difficulty == 3){
+                             paddleWidth = 60;
+                            }
+                        }
+                        else if(ability=="1up"){
+                            lives ++;
+                        }
                     }
                     brick.status = 0;  //brick is now destroyed
                     dy = -dy; //Changes direction
-                    if(bricks[c][r].special==true){
-                        if(ability=="doublePoints"){
-                            doublePoints = true;
-                        }
-                    }
                     if(doublePoints == true){
                         score++;
                         score++;
@@ -499,6 +525,15 @@
                                 dx -=0.5;
                                 leveldy += 0.5;
                                 leveldx -= 0.5;
+                            }
+                        if(difficulty == 1){
+                                paddleWidth = 100;
+                        }
+                        else if(difficulty==2){
+                                paddleWidth = 60;
+                        }
+                        else if(difficulty == 3){
+                             paddleWidth = 20;
                         }
                         score = 0;
                         count = 0;
