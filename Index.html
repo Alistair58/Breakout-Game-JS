@@ -96,6 +96,7 @@
  var resetCount = 0;
  var showHighscore = false;
  var inCanvas = false;
+ var specialCount = 0;
  let x = canvas.width/2;
  let y = canvas.height-30;
  
@@ -133,6 +134,7 @@
     dy = 0;
     totalScore = 0;
     done = false;
+    specialCount = 0;
     Btn1.style.visibility = "visible";
     Btn2.style.visibility = "visible";
     Btn3.style.visibility = "visible";
@@ -358,6 +360,8 @@
  }
 
  function drawBricks() {
+    randomC = Math.floor(Math.random()*brickColumnCount);
+    randomR = Math.floor(Math.random()*brickRowCount);
     for(var c=0; c<brickColumnCount; c++) {
         for(var r=0; r<brickRowCount; r++) {
             if(bricks[c][r].status ==1) { //Draw if brick hasn't been hit
@@ -365,11 +369,21 @@
                 var brickY = (r*(brickHeight+brickPadding)) + brickOffsetTop;
                 bricks[c][r].x = brickX;
                 bricks[c][r].y = brickY;
+                if(c==randomC && r==randomR && specialCount == 0) {
+                    bricks[c][r].special = true;
+                    specialCount++;
+                }
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                ctx.fillStyle = colourList[r]
+                if(bricks[c][r].special == true) {
+                    ctx.fillStyle = "white";
+                }
+                else {
+                    ctx.fillStyle = colourList[r];
+                }
                 ctx.fill();
                 ctx.closePath();
+                
             }
 
         }
@@ -391,6 +405,7 @@
                         alert("CONGRATULATIONS, level passed");
                         playLevelUp();
                         level ++;
+                        specialCount = 0;
                         if(dy > 0) {
                             dy = -dy;
                             dy -= 0.5;
@@ -413,7 +428,6 @@
                             }
                         }
                         y = canvas.height-30;
-                        //draw();
                         
                     }
                 }
@@ -528,7 +542,7 @@
         for(var c=0; c<brickColumnCount; c++) { //c is like an iteration variable in python. It increments by 1 on each loop. Loop ends when c >= column count.
             bricks[c] = []; // Creates a 2d array. Each column has its own list
             for(var r=0; r<brickRowCount; r++) {
-                bricks[c][r] = { x: 0, y:0, status:1 }; //status 1 means the brick hasn't been destroyed
+                bricks[c][r] = { x: 0, y:0, status:1 ,special:false}; //status 1 means the brick hasn't been destroyed
             }
         } 
     }
