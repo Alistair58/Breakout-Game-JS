@@ -104,6 +104,8 @@
  var abilityColour = "white";
  var leveldy = -2.5;
  var leveldx = 2.5;
+ var doublePoints = false;
+ var brickGoneCount = 0;
  let x = canvas.width/2;
  let y = canvas.height-30;
  
@@ -144,6 +146,7 @@
     specialCount = 0;
     leveldy = -2.5;
     leveldx = 2.5;
+    brickGoneCount = 0;
     Btn1.style.visibility = "visible";
     Btn2.style.visibility = "visible";
     Btn3.style.visibility = "visible";
@@ -409,6 +412,7 @@
             if(brick.status == 1){
                 if(x > brick.x && x < brick.x+brickWidth && y > brick.y && y < brick.y+brickHeight) { //If the ball is between the x and y values of the brick
                     playExplosion();
+                    brickGoneCount ++;
                     if(bricks[c][r].special==true){
                         if(ability=="speedUp"){
                             if(dy > 0 && dx > 0) {
@@ -428,12 +432,44 @@
                                 dx -=1;
                             }
                         }
+                        else if(ability=="slowDown"){
+                            if(dy < 0 && dx < 0) {
+                                dy += 1;
+                                dx += 1;
+                            }
+                            else if(dy > 0 && dx > 0) {
+                                dy -= 1;
+                                dx -= 1;
+                            }
+                            else if(dy > 0 && dx < 0) {
+                                dy -= 1;
+                                dx += 1;
+                            }
+                            else{
+                                dy +=1;
+                                dx -=1;
+                            }
+                        }
                     }
                     brick.status = 0;  //brick is now destroyed
                     dy = -dy; //Changes direction
-                    score++;
-                    totalScore++;
-                    if(score == brickRowCount*brickColumnCount){
+                    if(bricks[c][r].special==true){
+                        if(ability=="doublePoints"){
+                            doublePoints = true;
+                        }
+                    }
+                    if(doublePoints == true){
+                        score++;
+                        score++;
+                        totalScore++;
+                        totalScore++;
+                    }
+                    else{
+                        score++;
+                        totalScore++;
+                    }
+                    if(brickGoneCount == brickRowCount*brickColumnCount){
+                        brickGoneCount = 0;
                         alert("CONGRATULATIONS, level passed");
                         playLevelUp();
                         level ++;
@@ -466,6 +502,7 @@
                         }
                         score = 0;
                         count = 0;
+                        doublePoints = false;
                         inCanvas = false;
                         while(inCanvas == false) {
                             x = Math.floor(Math.random()*(canvas.width-ballRadius))+ballRadius;
