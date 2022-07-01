@@ -82,6 +82,8 @@
 <h3 style = "color:#a805fa;font-family:Lucida Console">Paddle Smaller - Decreases the size of the paddle</h3>
 <h3 style = "color:#39f7fa;font-family:Lucida Console">Paddle Bigger - Increases the size of the paddle</h3>
 <h3 style = "color:#047809;font-family:Lucida Console">1 Up - Gives the player 1 extra life for the rest of the game</h3>
+<h3 style = "color:#acff05;font-family:Lucida Console">Brick Speed Up - Increases the speed that the bricks approach the paddle</h3>
+<h3 style = "color:#610210;font-family:Lucida Console">Brick Slow Down - Decreases the speed that the bricks approach the paddle</h3>
 </center>
 </body>
 
@@ -124,8 +126,8 @@
  var showHighscore = false;
  var inCanvas = false;
  var specialCount = 0;
- var abilities = ["speedUp","slowDown","doublePoints","paddleSmaller","paddleBigger","1up"];
- var abilityColours = ["#21ff5c","#ff2521","#eafa11","#a805fa","#39f7fa","#047809"];
+ var abilities = ["speedUp","slowDown","doublePoints","paddleSmaller","paddleBigger","1up","brickSpeedUp","brickSlowDown"];
+ var abilityColours = ["#21ff5c","#ff2521","#eafa11","#a805fa","#39f7fa","#047809","#acff05","#610210"];
  var randomAbility = 0
  var ability = "speedUp";
  var abilityColour = "white";
@@ -136,6 +138,8 @@
  var difficulty = "";
  var dead = false;
  var brickYadd = 0;
+ var brickSpeedUp = false;
+ var brickSlowDown = false;
  let x = canvas.width/2;
  let y = canvas.height-30;
  
@@ -183,6 +187,8 @@
     leveldx = 2.5;
     brickGoneCount = 0;
     brickYadd = 0;
+    brickSpeedUp = false;
+    brickSlowDown = false;
     Btn1.style.visibility = "visible";
     Btn2.style.visibility = "visible";
     Btn3.style.visibility = "visible";
@@ -443,7 +449,15 @@
     if(dead==true){
     }
     else{
-        brickYadd+= 0.1;
+        if(brickSpeedUp == true){
+            brickYadd+=0.2;
+        }
+        else if(brickSlowDown == true){
+            brickYadd+=0.05;
+        }
+        else{
+            brickYadd+= 0.1;
+        }
     }
     randomC = Math.floor(Math.random()*brickColumnCount);
     randomR = Math.floor(Math.random()*brickRowCount);
@@ -620,6 +634,14 @@
                             play1Up();
                             lives ++;
                         }
+                        else if(ability=="brickSpeedUp"){
+                            brickSpeedUp = true;
+                            playSpeedUp();
+                        }
+                        else if(ability=="brickSlowDown"){
+                            brickSlowDown = true;
+                            playSlowDown();
+                        }
                     }
                     else{
                         playExplosion();
@@ -641,6 +663,8 @@
                         alert("CONGRATULATIONS, level passed");
                         playLevelUp();
                         createBricks();
+                        brickSpeedUp = false;
+                        brickSlowDown = false;
                         brickYadd = 0;
                         level ++;
                         specialCount = 0;
@@ -735,6 +759,8 @@
                 dead = true;
                 brickYadd = 0;
                 alert("GAME OVER");
+                brickSpeedUp = false;
+                brickSlowDown = false;
                 doublePoints = false;
                 if(resetCount ==0){
                     createItem();
@@ -785,6 +811,8 @@
                 brickYadd = 0;
                 alert("GAME OVER");
                 doublePoints = false;
+                brickSpeedUp = false;
+                brickSlowDown = false;
                 if(resetCount ==0){
                     createItem();
                     showHighscore = true;
