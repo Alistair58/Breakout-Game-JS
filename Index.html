@@ -56,6 +56,18 @@
 <br>
 <canvas id="myCanvas" width="480" height="320">
 </canvas>
+<br>
+<center>
+<h2 style = "font-family:Lucida Console">Power-Ups</h2>
+<p style = "font-family:Lucida Console">Each level will have 1 power-up which will have an effect that will last for the rest of the level. They can be any one of the following:</p>
+<br>
+<h3 style = "color:#21ff5c;font-family:Lucida Console">Speed Up - Increases the speed of the ball</h3>
+<h3 style = "color:#ff2521;font-family:Lucida Console">Slow Down - Decreases the speed of the ball</h3>
+<h3 style = "color:#eafa11;font-family:Lucida Console">Double Points - Each brick is worth 2 points</h3>
+<h3 style = "color:#a805fa;font-family:Lucida Console">Paddle Smaller - Decreases the size of the paddle</h3>
+<h3 style = "color:#39f7fa;font-family:Lucida Console">Paddle Bigger - Increases the size of the paddle</h3>
+<h3 style = "color:#047809;font-family:Lucida Console">1 Up - Gives the player 1 extra life for the rest of the game</h3>
+</center>
 </body>
 
 <script>
@@ -183,6 +195,15 @@
     }
  }
 
+ function createBricks() {
+    for(var c=0; c<brickColumnCount; c++) { //c is like an iteration variable in python. It increments by 1 on each loop. Loop ends when c >= column count.
+        bricks[c] = []; // Creates a 2d array. Each column has its own list
+        for(var r=0; r<brickRowCount; r++) {
+            bricks[c][r] = { x: 0, y:0, status:1 ,special:false}; //status 1 means the brick hasn't been destroyed
+        }
+    } 
+ }
+
  function rowsInputted() {
     var rows = document.getElementById("rowNumber").value;
     if(rows<1) {
@@ -196,12 +217,7 @@
     else {
         brickRowCount = rows;
         rowsChosen = true;
-        for(var c=0; c<brickColumnCount; c++) { //c is like an iteration variable in python. It increments by 1 on each loop. Loop ends when c >= column count.
-            bricks[c] = []; // Creates a 2d array. Each column has its own list
-            for(var r=0; r<brickRowCount; r++) {
-                bricks[c][r] = { x: 0, y:0, status:1 ,special:false}; //status 1 means the brick hasn't been destroyed
-            }
-        } 
+        createBricks();
         specialCount = 0;
         var form = document.getElementById("theForm");
         form.style.visibility = "hidden";
@@ -511,6 +527,7 @@
                         brickGoneCount = 0;
                         alert("CONGRATULATIONS, level passed");
                         playLevelUp();
+                        createBricks();
                         level ++;
                         specialCount = 0;
                         dy = leveldy;
@@ -589,6 +606,7 @@
             lives--;
             if(lives==0) {
                 alert("GAME OVER");
+                doublePoints = false;
                 if(resetCount ==0){
                     createItem();
                     showHighscore = true;
@@ -631,6 +649,7 @@
             lives--;
             if(lives==0) {
                 alert("GAME OVER");
+                doublePoints = false;
                 if(resetCount ==0){
                     createItem();
                     showHighscore = true;
