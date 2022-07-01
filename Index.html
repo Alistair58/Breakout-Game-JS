@@ -111,7 +111,7 @@
  let y = canvas.height-30;
  
  function reset() {
-    resetCount++
+    resetCount = 1;
     ballRadius = 10;
     paddleHeight = 10;
     paddleWidth = 60;
@@ -123,8 +123,8 @@
     P2paddleY = (canvas.height-paddleHeight);
     rightPressed = false;
     leftPressed = false;
-    brickRowCount = 3;
     brickColumnCount = 5;
+    brickRowCount = 3;
     brickWidth = 75;
     brickHeight = 20;
     brickPadding = 10;
@@ -137,7 +137,13 @@
     rowsChosen = false;
     playersChosen = false;
     count = 0;
-    bricks = []; //list of bricks
+    for(var c=0; c<brickColumnCount; c++) { //c is like an iteration variable in python. It increments by 1 on each loop. Loop ends when c >= column count.
+            bricks[c] = []; // Creates a 2d array. Each column has its own list
+            for(var r=0; r<brickRowCount; r++) {
+                bricks[c][r] = { x: 0, y:0, status:1 ,special:false}; //status 1 means the brick hasn't been destroyed
+            }
+    } 
+    //bricks = []; //list of bricks
     playersSelected = 0;
     level = 1;
     dx = 0;
@@ -190,6 +196,13 @@
     else {
         brickRowCount = rows;
         rowsChosen = true;
+        for(var c=0; c<brickColumnCount; c++) { //c is like an iteration variable in python. It increments by 1 on each loop. Loop ends when c >= column count.
+            bricks[c] = []; // Creates a 2d array. Each column has its own list
+            for(var r=0; r<brickRowCount; r++) {
+                bricks[c][r] = { x: 0, y:0, status:1 ,special:false}; //status 1 means the brick hasn't been destroyed
+            }
+        } 
+        specialCount = 0;
         var form = document.getElementById("theForm");
         form.style.visibility = "hidden";
         allDone();
@@ -290,7 +303,7 @@
  function drawScore() {
     ctx.font = "16px Lucida Console";
     ctx.fillStyle = "#0095DD";
-    ctx.fillText("Score: "+score, 8, 20);
+    ctx.fillText("Score: "+totalScore, 8, 20);
  }
  function drawLives() {
     ctx.font = "16px Lucida Console";
@@ -656,42 +669,34 @@
  }
 
  function draw() {
-    //clears screen so it doesn't leave a trail
-    count ++
-    if (count == 1) { //If it's the first loop create the brick list
-        for(var c=0; c<brickColumnCount; c++) { //c is like an iteration variable in python. It increments by 1 on each loop. Loop ends when c >= column count.
-            bricks[c] = []; // Creates a 2d array. Each column has its own list
-            for(var r=0; r<brickRowCount; r++) {
-                bricks[c][r] = { x: 0, y:0, status:1 ,special:false}; //status 1 means the brick hasn't been destroyed
-            }
-        } 
-    }
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBricks();
-    drawBall();
-    if(playersSelected==1) {
-        drawPaddle();
-    }
-    else if(playersSelected==2){
-        P1drawPaddle();
-        P2drawPaddle();
-    }
-    drawScore();
-    drawLives();
-    drawLevel();
-    if(showHighscore==true){
-        drawHighscore();
-    }
-    collisionDetection();
-    bounce();
-    if (paused == true){
-        alert("Paused\nPress OK to resume");
-        paused = false;
-    }
-    requestAnimationFrame(draw);
+        ctx.clearRect(0, 0, canvas.width, canvas.height); //clears screen so it doesn't leave a trail
+        drawBricks();
+        drawBall();
+        if(playersSelected==1) {
+            drawPaddle();
+        }
+        else if(playersSelected==2){
+            P1drawPaddle();
+            P2drawPaddle();
+        }
+        drawScore();
+        drawLives();
+        drawLevel();
+        if(showHighscore==true){
+            drawHighscore();
+        }
+        collisionDetection();
+        bounce();
+        if (paused == true){
+            alert("Paused\nPress OK to resume");
+            paused = false;
+        }
+        requestAnimationFrame(draw);
+}
+    
   
     
- }
+
 </script>
 
 </body>
