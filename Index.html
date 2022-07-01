@@ -135,6 +135,7 @@
  var brickGoneCount = 0;
  var difficulty = "";
  var dead = false;
+ var brickYadd = 0;
  let x = canvas.width/2;
  let y = canvas.height-30;
  
@@ -171,7 +172,6 @@
                 bricks[c][r] = { x: 0, y:0, status:1 ,special:false}; //status 1 means the brick hasn't been destroyed
             }
     } 
-    //bricks = []; //list of bricks
     playersSelected = 0;
     level = 1;
     dx = 0;
@@ -182,6 +182,7 @@
     leveldy = -2.5;
     leveldx = 2.5;
     brickGoneCount = 0;
+    brickYadd = 0;
     Btn1.style.visibility = "visible";
     Btn2.style.visibility = "visible";
     Btn3.style.visibility = "visible";
@@ -439,6 +440,11 @@
  }
 
  function drawBricks() {
+    if(dead==true){
+    }
+    else{
+        brickYadd+= 0.1;
+    }
     randomC = Math.floor(Math.random()*brickColumnCount);
     randomR = Math.floor(Math.random()*brickRowCount);
     for(var c=0; c<brickColumnCount; c++) {
@@ -446,31 +452,81 @@
             if(bricks[c][r].status ==1) { //Draw if brick hasn't been hit
                 var brickX = (c*(brickWidth+brickPadding)) +brickOffsetLeft; //x coordinate is the column X width (including padding) + the offset 
                 var brickY = (r*(brickHeight+brickPadding)) + brickOffsetTop;
-                bricks[c][r].x = brickX;
-                bricks[c][r].y = brickY;
-                if(c==randomC && r==randomR && specialCount == 0) {
-                    bricks[c][r].special = true;
-                    randomAbility = Math.floor(Math.random()*Object.keys(abilities).length);
-                    ability = abilities[randomAbility];
-                    abilityColour = abilityColours[randomAbility];
-                    specialCount++;
+                brickY += brickYadd;
+                if(brickY > 320){
+                    lives--;
+                    if(lives==0) {
+                        playDeath();
+                        dead = true;
+                        brickYadd = 0;
+                        brickY = (r*(brickHeight+brickPadding)) + brickOffsetTop; 
+                        alert("GAME OVER");
+                        doublePoints = false;
+                        if(resetCount ==0){
+                            createItem();
+                            showHighscore = true;
+                            drawHighscore();
+                        }
+                        else{
+                            if(totalScore>getValue()){
+                                createItem()
+                            }
+                        }
+                        reset();
+                    }
+                    else { //If there are lives left, the ball and paddle are reset
+                        playSlowDown();
+                        inCanvas = false;
+                        brickYadd = 0;
+                        brickY = (r*(brickHeight+brickPadding)) + brickOffsetTop;
+                        while(inCanvas == false) {
+                            x = Math.floor(Math.random()*(canvas.width-ballRadius))+ballRadius;
+                            if(x > 480 || x < 10) {
+                            }
+                            else {
+                                inCanvas = true;
+                            }
+                        }
+                        y = canvas.height-30;
+                        if(dy > 0) {
+                            dy = -dy;      
+                        }
+                        else if(dx , 0) {
+                            dx = -dx;      
+                        }
+                        paddleX = (canvas.width-paddleWidth)/2;
+                        P1paddleX = (canvas.width-paddleWidth) / 4;
+                        P2paddleX = ((canvas.width-paddleWidth) / 4)*3;
+                    }
                 }
-                ctx.beginPath();
-                ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                if(bricks[c][r].special == true) {
-                    ctx.fillStyle = abilityColour;
+                else{
+                    bricks[c][r].x = brickX;
+                    bricks[c][r].y = brickY;
+                    if(c==randomC && r==randomR && specialCount == 0) {
+                        bricks[c][r].special = true;
+                        randomAbility = Math.floor(Math.random()*Object.keys(abilities).length);
+                        ability = abilities[randomAbility];
+                        abilityColour = abilityColours[randomAbility];
+                        specialCount++;
+                    }
+                    ctx.beginPath();
+                    ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                    if(bricks[c][r].special == true) {
+                        ctx.fillStyle = abilityColour;
+                    }
+                    else {
+                        ctx.fillStyle = colourList[r];
+                    }
+                    ctx.fill();
+                    ctx.closePath();
                 }
-                else {
-                    ctx.fillStyle = colourList[r];
-                }
-                ctx.fill();
-                ctx.closePath();
-                
             }
-
+                
         }
-    }  
- }
+
+    }
+ }  
+ 
 
  function collisionDetection() {
     for(var c=0; c<brickColumnCount; c++){
@@ -585,6 +641,7 @@
                         alert("CONGRATULATIONS, level passed");
                         playLevelUp();
                         createBricks();
+                        brickYadd = 0;
                         level ++;
                         specialCount = 0;
                         dy = leveldy;
@@ -676,6 +733,7 @@
             if(lives==0) {
                 playDeath();
                 dead = true;
+                brickYadd = 0;
                 alert("GAME OVER");
                 doublePoints = false;
                 if(resetCount ==0){
@@ -724,6 +782,7 @@
             if(lives==0) {
                 playDeath();
                 dead = true;
+                brickYadd = 0;
                 alert("GAME OVER");
                 doublePoints = false;
                 if(resetCount ==0){
@@ -737,7 +796,6 @@
                     }
                 }
                 reset();
-                
             }
             else { //If there are lives left, the ball and paddle are reset
                 playSlowDown();
@@ -789,11 +847,6 @@
         }
         requestAnimationFrame(draw);
 }
-    
-  
-    
-
 </script>
-
 </body>
 </html>
