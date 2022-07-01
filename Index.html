@@ -738,7 +738,6 @@
             playBounce();
         }
     }
-        
     if(y + dy < ballRadius) { //If ball bounces off the top
         dy = -dy;
         if(dead == false) {
@@ -776,6 +775,7 @@
             }
             else { //If there are lives left, the ball and paddle are reset
                 playSlowDown();
+                brickYadd = 0;
                 inCanvas = false;
                 while(inCanvas == false) {
                     x = Math.floor(Math.random()*(canvas.width-ballRadius))+ballRadius;
@@ -827,6 +827,7 @@
             }
             else { //If there are lives left, the ball and paddle are reset
                 playSlowDown();
+                brickYadd = 0;
                 inCanvas = false;
                 while(inCanvas == false) {
                     x = Math.floor(Math.random()*(canvas.width-ballRadius))+ballRadius;
