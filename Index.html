@@ -27,8 +27,23 @@
 <audio id="bounce">
     <source src="bounce.mp3" type="audio/mp3">
 </audio>
-<audio id="levelUp">
-    <source src="levelUp.mp3" type="audio/mp3">
+<audio id="LevelUp">
+    <source src="LevelUp.wav" type="audio/wav">
+</audio>
+<audio id="SpeedUp">
+    <source src="SpeedUp.wav" type="audio/wav">
+</audio>
+<audio id="SlowDown">
+    <source src="SlowDown.wav" type="audio/wav">
+</audio>
+<audio id="1up">
+    <source src="1up.wav" type="audio/wav">
+</audio>
+<audio id="DoublePoints">
+    <source src="DoublePoints.wav" type="audio/wav">
+</audio>
+<audio id="Death">
+    <source src="death.wav" type="audio/wav">
 </audio>
 <br>
 <center><h2 style="font-family:Lucida Console" id="startText">Choose your difficulty to begin</h2>
@@ -119,6 +134,7 @@
  var doublePoints = false;
  var brickGoneCount = 0;
  var difficulty = "";
+ var dead = false;
  let x = canvas.width/2;
  let y = canvas.height-30;
  
@@ -189,6 +205,7 @@
     if(rowsChosen == true && difficultyChosen == true &&  playersChosen == true) { //If both forms have been submitted
         dx = 2.5;
         dy = -2.5;
+        dead = false;
         if(resetCount == 0) {
             draw();
         }
@@ -248,7 +265,12 @@
  var Btn3 = document.getElementById("Btn3");
  var explosionAudio = document.getElementById("explosion");
  var bounceAudio = document.getElementById("bounce");
- var levelAudio = document.getElementById("levelUp");
+ var levelAudio = document.getElementById("LevelUp");
+ var speedUpAudio = document.getElementById("SpeedUp");
+ var slowDownAudio = document.getElementById("SlowDown");
+ var oneUpAudio = document.getElementById("1up");
+ var doublePointsAudio = document.getElementById("DoublePoints");
+ var deathAudio = document.getElementById("Death");
  const startText = document.getElementById("startText");
  Btn1.addEventListener("click", () => {
     Btn1.style.visibility = "hidden";
@@ -309,6 +331,21 @@
  }
  function playLevelUp() {
     levelAudio.play();
+ }
+ function playSpeedUp() {
+    speedUpAudio.play();
+ }
+ function playSlowDown() {
+    slowDownAudio.play();
+ }
+ function play1Up() {
+    oneUpAudio.play();
+ }
+ function playDoublePoints() {
+    doublePointsAudio.play();
+ }
+ function playDeath() {
+    deathAudio.play();
  }
 
  function drawHighscore(){
@@ -441,10 +478,10 @@
             var brick = bricks[c][r]; //Stores each brick as brick
             if(brick.status == 1){
                 if(x > brick.x && x < brick.x+brickWidth && y > brick.y && y < brick.y+brickHeight) { //If the ball is between the x and y values of the brick
-                    playExplosion();
                     brickGoneCount ++;
                     if(bricks[c][r].special==true){
                         if(ability=="speedUp"){
+                            playSpeedUp();
                             if(dy > 0 && dx > 0) {
                                 dy += 1;
                                 dx += 1;
@@ -463,6 +500,7 @@
                             }
                         }
                         else if(ability=="slowDown"){
+                            playSlowDown();
                             if(dy < 0 && dx < 0) {
                                 dy += 1;
                                 dx += 1;
@@ -481,35 +519,54 @@
                             }
                         }
                         else if(ability=="doublePoints"){
+                            playDoublePoints();
                             doublePoints = true;
                         }
                         else if(ability=="paddleSmaller"){
+                            playSlowDown();
                             if(difficulty == 1){
                                 paddleWidth = 60;
+                                P1paddleWidth = 60;
+                                P2paddleWidth = 60;
                             }
                             else if(difficulty==2){
                                 paddleWidth = 20;
+                                P1paddleWidth = 20;
+                                P2paddleWidth = 20;
                             }
                             
                             else if(difficulty == 3){
-                             paddleWidth = 10;
+                                paddleWidth = 10;
+                                P1paddleWidth = 10;
+                                P2paddleWidth = 10;
                             }
                         }
                         else if(ability=="paddleBigger"){
+                            playSpeedUp();
                             if(difficulty == 1){
                                 paddleWidth = 150;
+                                P1paddleWidth = 150;
+                                P2paddleWidth = 150;
                             }
                             else if(difficulty==2){
                                 paddleWidth = 100;
+                                P1paddleWidth = 100;
+                                P2paddleWidth = 100;
                             }
                             
                             else if(difficulty == 3){
-                             paddleWidth = 60;
+                                paddleWidth = 60;
+                                P1paddleWidth = 60;
+                                P2paddleWidth = 60;
                             }
                         }
                         else if(ability=="1up"){
+                            play1Up();
                             lives ++;
                         }
+                    }
+                    else{
+                        playExplosion();
                     }
                     brick.status = 0;  //brick is now destroyed
                     dy = -dy; //Changes direction
@@ -557,13 +614,19 @@
                                 leveldx -= 0.5;
                             }
                         if(difficulty == 1){
-                                paddleWidth = 100;
+                            paddleWidth = 100;
+                            P1paddleWidth = 100;
+                            P2paddleWidth = 100;
                         }
                         else if(difficulty==2){
-                                paddleWidth = 60;
+                            paddleWidth = 60;
+                            P1paddleWidth = 60;
+                            P2paddleWidth = 60;
                         }
                         else if(difficulty == 3){
-                             paddleWidth = 20;
+                            paddleWidth = 20;
+                            P1paddleWidth = 20;
+                            P2paddleWidth = 20;
                         }
                         score = 0;
                         count = 0;
@@ -590,21 +653,29 @@
  function bounce() {
     if(x + dx > canvas.width-ballRadius  || x + dx < ballRadius) { //If ball bounces off sides
         dx = -dx;
-        playBounce();
+        if(dead == false) {
+            playBounce();
+        }
     }
         
     if(y + dy < ballRadius) { //If ball bounces off the top
         dy = -dy;
-        playBounce();            
+        if(dead == false) {
+            playBounce();
+        }           
     }
     if(playersSelected==1) {
         if(x+ballRadius > paddleX && x-ballRadius < paddleX + paddleWidth && y + dy > (canvas.height-paddleHeight)-ballRadius+5) { // If the x and y coordinates of the ball is between each end of the paddle it bounces. 5 just seems to make it bounce in the right place
         dy = -dy;
-        playBounce();
+        if(dead == false) {
+            playBounce();
+        }
         }
         else if(y + dy > canvas.height-ballRadius) { //If ball hits the bottom
             lives--;
             if(lives==0) {
+                playDeath();
+                dead = true;
                 alert("GAME OVER");
                 doublePoints = false;
                 if(resetCount ==0){
@@ -620,6 +691,7 @@
                 reset();
             }
             else { //If there are lives left, the ball and paddle are reset
+                playSlowDown();
                 inCanvas = false;
                 while(inCanvas == false) {
                     x = Math.floor(Math.random()*(canvas.width-ballRadius))+ballRadius;
@@ -642,12 +714,16 @@
     }
     else {
         if((x+ballRadius > P1paddleX && x-ballRadius < P1paddleX + paddleWidth && y + dy > (canvas.height-paddleHeight)-ballRadius+5)  || (x+ballRadius > P2paddleX && x-ballRadius < P2paddleX + paddleWidth && y + dy > (canvas.height-paddleHeight)-ballRadius+5)) { // If the x and y coordinates of the ball is between each end of either paddle it bounces. 5 just seems to make it bounce in the right place
-            playBounce();
+            if(dead == false) {
+                playBounce();
+            }
             dy = -dy;
         }
         else if(y + dy > canvas.height-ballRadius) { //If ball hits the bottom
             lives--;
             if(lives==0) {
+                playDeath();
+                dead = true;
                 alert("GAME OVER");
                 doublePoints = false;
                 if(resetCount ==0){
@@ -664,6 +740,7 @@
                 
             }
             else { //If there are lives left, the ball and paddle are reset
+                playSlowDown();
                 inCanvas = false;
                 while(inCanvas == false) {
                     x = Math.floor(Math.random()*(canvas.width-ballRadius))+ballRadius;
